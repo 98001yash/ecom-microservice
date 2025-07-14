@@ -13,6 +13,7 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
+@Table(name = "orders")
 public class Orders {
 
     @Id
@@ -24,6 +25,6 @@ public class Orders {
 
     private Double price;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items;
 }
