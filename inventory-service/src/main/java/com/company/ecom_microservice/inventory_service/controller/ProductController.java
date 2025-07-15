@@ -1,11 +1,12 @@
 package com.company.ecom_microservice.inventory_service.controller;
 
 
+import com.company.ecom_microservice.inventory_service.clients.OrdersFeignClient;
 import com.company.ecom_microservice.inventory_service.dtos.ProductDto;
 import com.company.ecom_microservice.inventory_service.service.ProductService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,13 +27,17 @@ public class ProductController {
     private final DiscoveryClient discoveryClient;
     private final RestClient restClient;
 
-    @GetMapping("fetchOrders")
+    private final OrdersFeignClient ordersFeignClient;
+
+    @GetMapping("/fetchOrders")
     public String FetchFromOrdersService(){
-        ServiceInstance ordersService = discoveryClient.getInstances("order-service").getFirst();
-       return   restClient.get()
-                .uri(ordersService.getUri()+"/orders/core/helloOrders")
-                .retrieve()
-                .body(String.class);
+      //  ServiceInstance ordersService = discoveryClient.getInstances("order-service").getFirst();
+//       return   restClient.get()
+//                .uri(ordersService.getUri()+"/orders/core/helloOrders")
+//                .retrieve()
+//                .body(String.class);
+
+        return ordersFeignClient.helloOrders();
 
     }
 
