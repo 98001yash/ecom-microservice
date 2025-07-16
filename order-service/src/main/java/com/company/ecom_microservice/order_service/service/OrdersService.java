@@ -1,8 +1,11 @@
 package com.company.ecom_microservice.order_service.service;
 
 
+import com.company.ecom_microservice.order_service.clients.InventoryOpenFeignClient;
 import com.company.ecom_microservice.order_service.dtos.OrderRequestDto;
+import com.company.ecom_microservice.order_service.entity.OrderItem;
 import com.company.ecom_microservice.order_service.entity.Orders;
+import com.company.ecom_microservice.order_service.enums.OrderStatus;
 import com.company.ecom_microservice.order_service.repository.OrdersRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +22,9 @@ public class OrdersService {
 
     private final ModelMapper modelMapper;
     private final OrdersRepository ordersRepository;
+    private final InventoryOpenFeignClient inventoryOpenFeignClient;
+
+
     public List<OrderRequestDto> getAllOrders(){
         log.info("Fetching all Orders");
         List<Orders> orders = ordersRepository.findAll();
@@ -29,5 +35,21 @@ public class OrdersService {
         log.info("Fetching order with ID: {}",id);
         Orders order = ordersRepository.findById(id).orElseThrow(()->new RuntimeException("Order not found"));
         return modelMapper.map(order,OrderRequestDto.class);
+    }
+
+    public OrderRequestDto createOrder(OrderRequestDto orderRequestDto) {
+       Double totalPrice = inventoryOpenFeignClient.ReduceStocks(orderRequestDto);
+
+       Orders orders = modelMapper.map(orderRequestDto, Orders.class);
+       for(OrderItem orderItem: orders.getItems()){
+           orderItem.setOrder(orders);
+       }
+
+       orders.setTotalPrice(totalPrice);
+       orders.setOrderStatus(OrderStatus.CONFIRMED);
+
+
+       Orders savedOrder = ordersRepository.save(orders);
+       return modelMapper.map(savedOrder, OrderRequestDto.class);
     }
 }
