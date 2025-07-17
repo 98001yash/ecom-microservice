@@ -1,5 +1,6 @@
 package com.company.ecom_microservice.api_gateway.filters;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.stereotype.Component;
@@ -8,11 +9,14 @@ import reactor.core.publisher.Mono;
 
 
 @Component
+@Slf4j
 public class GlobalLoggingFilter implements GlobalFilter {
 
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        return null;
+
+        log.info("Logging from Global: {}",exchange.getRequest().getURI());
+        return chain.filter(exchange);
     }
 }
