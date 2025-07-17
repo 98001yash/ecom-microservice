@@ -51,13 +51,9 @@ public class OrdersService {
        for(OrderItem orderItem: orders.getItems()){
            orderItem.setOrder(orders);
        }
-
        orders.setTotalPrice(totalPrice);
        orders.setOrderStatus(OrderStatus.CONFIRMED);
-
-
        Orders savedOrder = ordersRepository.save(orders);
-
        return modelMapper.map(savedOrder, OrderRequestDto.class);
     }
 
