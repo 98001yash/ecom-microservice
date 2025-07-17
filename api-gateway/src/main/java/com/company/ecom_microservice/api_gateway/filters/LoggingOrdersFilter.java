@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 public class LoggingOrdersFilter extends AbstractGatewayFilterFactory<LoggingOrdersFilter.Config> {
 
 
-    public LoggingOrdersFilter(Class<Config> configClass){
-        super(configClass);
+    public LoggingOrdersFilter(){
+        super(Config.class);
     }
 
 
