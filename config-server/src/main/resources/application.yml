@@ -1,0 +1,14 @@
+spring.application.name: config-server
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/98001yash/ecom-microservice-config-server
+          username: ${GIT_USERNAME}
+          password: ${GIT_ECOM_MICROSERVICE_TOKEN}
+          default-label: main
+
+
+server:
+  port: 8888
