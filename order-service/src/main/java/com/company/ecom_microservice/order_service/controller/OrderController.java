@@ -1,12 +1,14 @@
 package com.company.ecom_microservice.order_service.controller;
 
 
+import com.company.ecom_microservice.order_service.config.FeaturesEnableConfig;
 import com.company.ecom_microservice.order_service.dtos.OrderRequestDto;
 import com.company.ecom_microservice.order_service.service.OrdersService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,9 +18,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/core")
 @Slf4j
+@RefreshScope
 public class OrderController {
 
     private final OrdersService ordersService;
+    private final FeaturesEnableConfig featuresEnableConfig;
 
     @Value("${my.variable}")
     private String myVariable;
@@ -27,7 +31,12 @@ public class OrderController {
 
     @GetMapping("/helloOrders")
     public String helloOrders(){
-        return "Hello from Order-service, my variable is: "+myVariable;
+
+        if(featuresEnableConfig.isUserTrackingEnabled()){
+            return "User tracking enabled wohooo, my variable is: "+myVariable;
+        }else {
+            return "User tracking disabled awwww, my variable is: "+myVariable;
+        }
     }
 
 
